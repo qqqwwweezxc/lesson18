@@ -1,0 +1,23 @@
+{% extends 'website/base.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5" style="max-width: 600px;">
+
+    <h2 class="mb-4">My Profile</h2>
+    {% if profile.avatar %}
+        <img src="{{ profile.avatar.url }}" alt="Avatar" class="img-thumbnail" style="max-width: 200px;">
+    {% else %}
+        <img src="https://via.placeholder.com/200" alt="No Avatar" class="img-thumbnail">
+    {% endif %}
+    <div class="card p-3 mb-4">
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+    </div>
+
+
+</div>
+
+{% endblock %}
