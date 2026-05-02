@@ -14,22 +14,12 @@ def index(request: HttpRequest) -> HttpResponse:
 
 def register_view(request: HttpRequest) -> HttpResponse:
     """Renders the register page."""
-    if request.method == 'POST':
-        form = forms.RegistrationForm(request.POST)
+    form = forms.RegistrationForm(request.POST or None)
 
-        if form.is_valid():
-            user = User.objects.create_user(
-                username=form.cleaned_data['nickname'],
-                email=form.cleaned_data['email'],
-                password=form.cleaned_data['password']
-            )
-
-            UserProfile.objects.create(user=user)
-
-            login(request, user)
-            return redirect('profile')
-    else:
-        form = forms.RegistrationForm()
+    if request.method == 'POST' and form.is_valid():
+        user = form.save()
+        login(request, user)
+        return redirect('profile')
 
     return render(request, 'website/registration_form.html', {'form': form})
 
@@ -82,7 +72,7 @@ def change_password_view(request: HttpRequest) -> HttpResponse:
 @login_required
 def profile_view(request: HttpRequest) -> HttpResponse:
     """Renders the profile page."""
-    profile, created = UserProfile.objects.get_or_create(user=request.user)
+    profile = request.user.profile
 
     return render(request, 'website/profile.html', {
         'profile': profile

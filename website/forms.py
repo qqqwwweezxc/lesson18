@@ -56,6 +56,19 @@ class RegistrationForm(forms.Form):
             raise forms.ValidationError('User with this email already exists')
         return email
 
+    def save(self, commit=True):
+        user = User(
+            username=self.cleaned_data['nickname'],
+            email=self.cleaned_data['email'],
+        )
+        user.set_password(self.cleaned_data['password'])
+
+        if commit:
+            user.save()
+            models.UserProfile.objects.create(user=user)
+
+        return user
+
 
 class UserProfileForm(forms.ModelForm):
     class Meta:
